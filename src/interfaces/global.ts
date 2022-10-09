@@ -15,3 +15,10 @@ export interface IEvents {
     date: string;
     events: IEvent[];
 }
+
+export interface INav {
+    nav: number;
+    setNav: React.Dispatch<React.SetStateAction<number>>;
+    month: string;
+    year: string;
+}

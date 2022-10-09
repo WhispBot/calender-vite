@@ -35,16 +35,24 @@ const useCalanderDays = (events: IEvents[] = []) => {
     const [days, setDays] = useState<IDay[]>([]);
     const [nav, setNav] = useState<number>(0);
 
+    const [month, setMonth] = useState<string>("");
+    const [year, setYear] = useState<string>("");
+
     useEffect(() => {
         const currentMonth = dayjs().month();
 
         const dt = dayjs().set("month", currentMonth + nav);
 
-        const month = dt.month();
-        const year = dt.year();
+        setMonth(dt.format("MMMM"));
+        setYear(dt.format("YYYY"));
 
+        // dayjs days gos from 0-6 witch sunday is 0, so need to set it to 6
+        // todo: find another way of getting the ramaning day of a week
         const firstDayOfMonth =
-            Number(dayjs(`${dt.year()}-${dt.month() + 1}-${1}`).format("d")) - 1;
+            Number(dayjs(`${dt.year()}-${dt.month() + 1}-${1}`).format("d")) - 1 === -1
+                ? 6
+                : Number(dayjs(`${dt.year()}-${dt.month() + 1}-${1}`).format("d")) - 1;
+
         const daysInMonth = dayjs(`${dt.year()}-${dt.month() + 1}-${1}`).daysInMonth();
 
         const temp: IDay[] = [];
@@ -68,7 +76,7 @@ const useCalanderDays = (events: IEvents[] = []) => {
         setDays(temp);
     }, [nav, events]);
 
-    return { days, setNav };
+    return { days, nav: { nav, setNav, month, year } };
 };
 
 export default useCalanderDays;
